@@ -2,5 +2,8 @@
 .idea/
 .vscode/
 
+# cache
+__pycache__/
+
 # build
 dist/

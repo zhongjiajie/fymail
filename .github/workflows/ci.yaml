@@ -14,6 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Install Hatch
         uses: pypa/hatch@install
       - name: Run Build
@@ -23,6 +24,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Install Hatch
         uses: pypa/hatch@install
       - name: Run Test
