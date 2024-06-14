@@ -1,0 +1,6 @@
+# Editor
+.idea/
+.vscode/
+
+# build
+dist/
