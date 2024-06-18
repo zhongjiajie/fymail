@@ -5,6 +5,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from fymail.providers.base.rule_base import RuleBase
+from fymail.utils.collect import most_common_element
 
 if TYPE_CHECKING:
     from aiohttp import ClientResponse, ClientSession
@@ -41,10 +42,14 @@ class Commit(RuleBase):
                 return None
 
             tasks = [session.get(url) for url in url_repo_commits]
-            tasks_result: list[ClientResponse] = await asyncio.gather(*tasks)
-            emails = [await self.parse(resp) for resp in tasks_result]
-            logger.debug("Get email from %s is: %s, only pick index=0 if more than one.", repr(self), emails)
-            return emails[0] if emails else None
+            tasks_result: tuple[ClientResponse] = await asyncio.gather(*tasks)
+
+            parse_result = [await self.parse(resp) for resp in tasks_result]
+            email = most_common_element(parse_result, ignore_none=True)
+            logger.debug(
+                "Get email from %s is: %s, try to get most common element: %s.", repr(self), parse_result, email
+            )
+            return email
 
     async def parse(self, resp: ClientResponse) -> str | None:
         response: list[dict] = await resp.json()
