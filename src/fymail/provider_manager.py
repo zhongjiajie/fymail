@@ -1,20 +1,22 @@
+from __future__ import annotations
+
 import importlib
 import inspect
+import logging
 import pkgutil
-
+from typing import ClassVar
 
 from fymail.error import ProvideNotExistsError
 from fymail.providers.base.provider_base import ProviderBase
-import logging
 
 logger = logging.getLogger(__name__)
 
 
 class ProviderManger:
-    providers = {}
+    providers: ClassVar[dict[str, ProviderBase]] = {}
 
-    package_provider = "fymail.providers"
-    skip_modules = ["base"]
+    package_provider: str = "fymail.providers"
+    skip_modules = ("base",)
 
     def register_plugin(self) -> None:
         package = importlib.import_module(self.package_provider)

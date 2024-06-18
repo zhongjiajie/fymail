@@ -1,9 +1,14 @@
-from aiohttp import ClientSession, ClientResponse
+from __future__ import annotations
+
+import asyncio
+import logging
+from typing import TYPE_CHECKING
 
 from fymail.providers.base.rule_base import RuleBase
+from fymail.utils.collect import most_common_element
 
-import logging
-import asyncio
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse, ClientSession
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +26,7 @@ class Commit(RuleBase):
     def build_url(self, iden: str) -> str:
         return f"{self.build_url_path()}/{iden}/repos"
 
-    async def run(self,
-                  session: ClientSession,
-                  iden: str,
-                  params: dict | None = None) -> str | None:
+    async def run(self, session: ClientSession, iden: str, params: dict | None = None) -> str | None:
         if self.headers:
             session.headers.update(self.headers)
 
@@ -40,20 +42,22 @@ class Commit(RuleBase):
                 return None
 
             tasks = [session.get(url) for url in url_repo_commits]
-            tasks_result: list[ClientResponse] = await asyncio.gather(*tasks)
-            emails = [await self.parse(resp) for resp in tasks_result]
-            logger.debug("Get email from %s is: %s, only pick index=0 if more than one.", repr(self), emails)
-            return emails[0] if emails else None
+            tasks_result: tuple[ClientResponse] = await asyncio.gather(*tasks)
+
+            parse_result = [await self.parse(resp) for resp in tasks_result]
+            email = most_common_element(parse_result, ignore_none=True)
+            logger.debug(
+                "Get email from %s is: %s, try to get most common element: %s.", repr(self), parse_result, email
+            )
+            return email
 
     async def parse(self, resp: ClientResponse) -> str | None:
         response: list[dict] = await resp.json()
         logger.debug("Get response from %s is: %s", repr(self), response)
         for commit in response:
-            
             if "commit" not in commit:
                 continue
             auther = commit["commit"]["author"]
             if auther and "email" in auther and not auther["email"].endswith("users.noreply.github.com"):
                 return auther["email"]
         return None
-

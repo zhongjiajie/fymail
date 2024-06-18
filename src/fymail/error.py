@@ -43,7 +43,6 @@ class NoProviderBaseUrlPathError(FyMailError):
 
 
 class ProvideNotExistsError(FyMailError):
-    def __init__(self, *,  provider_name):
+    def __init__(self, *, provider_name):
         self.message = f"Provider {provider_name} not exists"
         super().__init__(self.message)
-

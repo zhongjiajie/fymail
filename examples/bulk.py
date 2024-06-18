@@ -1,13 +1,14 @@
+from __future__ import annotations
+
 import asyncio
+import logging
 import os
+import time
 
 import aiohttp
-
-import logging
-from fymail import FyMail
-
 from aiohttp import ClientSession
-import time
+
+from fymail import FyMail
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
@@ -15,7 +16,8 @@ logging.getLogger().setLevel(logging.INFO)
 # Set the environment variable ``FYMAIL_GH_TOKEN`` to your GitHub token
 gh_token = os.environ.get("FYMAIL_GH_TOKEN", None)
 if not gh_token:
-    raise ValueError("Please set the environment variable ``FYMAIL_GH_TOKEN``")
+    msg = "Please set the environment variable ``FYMAIL_GH_TOKEN``"
+    raise ValueError(msg)
 
 repos = [
     "python/cpython",
@@ -29,7 +31,7 @@ session_header = {
 }
 
 
-async def get_repo_contributors(session: ClientSession, repo: str, simple: bool = False) -> list[str]:
+async def get_repo_contributors(session: ClientSession, repo: str, *, simple: bool | None = False) -> list[str]:
     contributors = []
     url = f"https://api.github.com/repos/{repo}/contributors"
 
@@ -60,12 +62,9 @@ async def main():
             contributors.extend(await get_repo_contributors(session, repo, simple=True))
             task_emails.extend([fymail.get(iden=c, provider="github", auth=gh_token) for c in contributors])
 
-        start = time.perf_counter()
-        emails = await asyncio.gather(*task_emails)
-        end = time.perf_counter()
-        print(list(zip(contributors, emails)))
-        print(f"Time taken: {end - start:.2f} seconds, "
-              f"for {len(repos)} repositories and {len(contributors)} github users.")
+        time.perf_counter()
+        await asyncio.gather(*task_emails)
+        time.perf_counter()
 
 
 if __name__ == "__main__":
