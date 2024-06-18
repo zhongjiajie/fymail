@@ -20,13 +20,13 @@ class ProviderBaseMeta(type):
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
 
-        if cls.__name__ == 'ProviderBase':
+        if cls.__name__ == "ProviderBase":
             return
 
-        if getattr(cls, 'base_url', None) is None:
+        if getattr(cls, "base_url", None) is None:
             raise NoProviderBaseUrlPathError
 
-        if getattr(cls, 'provider_name', None) is None:
+        if getattr(cls, "provider_name", None) is None:
             raise NoProviderNameError
 
         # if getattr(cls, 'package_provider', None) is None:
@@ -40,7 +40,7 @@ class ProviderBase(metaclass=ProviderBaseMeta):
     rules: ClassVar[list[RuleBase]] = []
 
     def __repr__(self):
-        return f'<Provider: {self.provider_name}>'
+        return f"<Provider: {self.provider_name}>"
 
     def name(self) -> str:
         return self.provider_name
@@ -68,13 +68,13 @@ class ProviderBase(metaclass=ProviderBaseMeta):
             return
 
         package = importlib.import_module(self.package_provider)
-        for module_info in pkgutil.walk_packages(package.__path__, f'{self.package_provider}.'):
+        for module_info in pkgutil.walk_packages(package.__path__, f"{self.package_provider}."):
             module = importlib.import_module(module_info.name)
-            logger.debug('Registering rules from module %s', module.__name__)
+            logger.debug("Registering rules from module %s", module.__name__)
 
             for _, obj in inspect.getmembers(module, inspect.isclass):
                 if issubclass(obj, RuleBase) and obj is not RuleBase:
-                    logger.debug('Registering rule from rule %s', obj.__name__)
+                    logger.debug("Registering rule from rule %s", obj.__name__)
                     self.rules.append(obj(self.base_url))
 
         # make sure rule keep in manual order

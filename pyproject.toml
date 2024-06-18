@@ -61,7 +61,6 @@ check = "mypy --install-types --non-interactive {args:src/fymail tests}"
 
 [tool.ruff.format]
 preview = true
-quote-style = "single"
 
 [tool.ruff.lint]
 preview = true

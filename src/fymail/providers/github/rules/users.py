@@ -17,10 +17,10 @@ class Users(RuleBase):
     :seealso: https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-a-user
     """
 
-    name = 'GH01'
-    path = 'users'
+    name = "GH01"
+    path = "users"
 
     async def parse(self, resp: ClientResponse) -> str | None:
         response = await resp.json()
-        logger.debug('Get response from %s is: %s', repr(self), response)
-        return response['email'] if 'email' in response else None
+        logger.debug("Get response from %s is: %s", repr(self), response)
+        return response["email"] if "email" in response else None

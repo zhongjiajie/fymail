@@ -13,13 +13,13 @@ class RuleBaseMeta(type):
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
 
-        if cls.__name__ == 'RuleBase':
+        if cls.__name__ == "RuleBase":
             return
 
-        if getattr(cls, 'name', None) is None:
+        if getattr(cls, "name", None) is None:
             raise NoRuleNameError
 
-        if getattr(cls, 'path', None) is None:
+        if getattr(cls, "path", None) is None:
             raise NoRuleUrlPathError
 
 
@@ -32,13 +32,13 @@ class RuleBase(metaclass=RuleBaseMeta):
         self.base_url = base_url
 
     def __repr__(self):
-        return f'<Rule: class:{self.__class__.__name__}, name:{self.name}>'
+        return f"<Rule: class:{self.__class__.__name__}, name:{self.name}>"
 
     def build_url_path(self) -> str:
-        return f'{self.base_url}/{self.path}'
+        return f"{self.base_url}/{self.path}"
 
     def build_url(self, iden: str) -> str:
-        return f'{self.build_url_path()}/{iden}'
+        return f"{self.build_url_path()}/{iden}"
 
     async def run(self, session: ClientSession, iden: str, params: dict | None = None) -> str | None:
         if self.headers:
