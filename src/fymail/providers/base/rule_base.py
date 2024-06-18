@@ -1,9 +1,12 @@
-from abc import ABC, abstractmethod
-from typing import Any
+from __future__ import annotations
 
-from aiohttp import ClientSession, ClientResponse
+from abc import abstractmethod
+from typing import TYPE_CHECKING
 
 from fymail.error import NoRuleNameError, NoRuleUrlPathError
+
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse, ClientSession
 
 
 class RuleBaseMeta(type):
@@ -29,24 +32,20 @@ class RuleBase(metaclass=RuleBaseMeta):
         self.base_url = base_url
 
     def __repr__(self):
-        return f"<Rule: class:{self.__class__.__name__}, name:{self.name}>"
+        return f'<Rule: class:{self.__class__.__name__}, name:{self.name}>'
 
     def build_url_path(self) -> str:
-        return f"{self.base_url}/{self.path}"
+        return f'{self.base_url}/{self.path}'
 
     def build_url(self, iden: str) -> str:
-        return f"{self.build_url_path()}/{iden}"
+        return f'{self.build_url_path()}/{iden}'
 
-    async def run(self,
-                  session: ClientSession,
-                  iden: str,
-                  params: dict | None = None) -> str | None:
+    async def run(self, session: ClientSession, iden: str, params: dict | None = None) -> str | None:
         if self.headers:
             session.headers.update(self.headers)
         async with session.get(self.build_url(iden), params=params) as response:
             return await self.parse(response)
 
     @abstractmethod
-    async def parse(self,
-                    response: ClientResponse) -> str | None:
+    async def parse(self, response: ClientResponse) -> str | None:
         pass

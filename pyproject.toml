@@ -55,8 +55,19 @@ extra-args = ["-vv"]
 extra-dependencies = [
     "mypy>=1.0.0",
 ]
+
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/fymail tests}"
+
+[tool.ruff.format]
+preview = true
+quote-style = "single"
+
+[tool.ruff.lint]
+preview = true
+
+[tool.ruff.lint.extend-per-file-ignores]
+"examples/*" = ["INP001"]
 
 [tool.hatch.build.targets.sdist]
 exclude = [
