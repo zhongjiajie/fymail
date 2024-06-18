@@ -7,14 +7,12 @@ class GitHub(ProviderBase):
     base_url = "https://api.github.com"
     provider_name = "GitHub"
     package_provider = "fymail.providers.github"
-    rules = []
 
     def __init__(self, *args, **kwargs):
         super(ProviderBase, self).__init__(*args, **kwargs)
 
     @staticmethod
-    def auth_setter(session: ClientSession,
-                    auth: str) -> None:
+    def auth_setter(session: ClientSession, auth: str) -> None:
         session.headers.update({
             "Accept": "application/vnd.github+json",
             "Authorization": f"token {auth}",

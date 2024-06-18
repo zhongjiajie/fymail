@@ -1,9 +1,13 @@
-from aiohttp import ClientSession, ClientResponse
+from __future__ import annotations
+
+import asyncio
+import logging
+from typing import TYPE_CHECKING
 
 from fymail.providers.base.rule_base import RuleBase
 
-import logging
-import asyncio
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse, ClientSession
 
 logger = logging.getLogger(__name__)
 
@@ -21,10 +25,7 @@ class Commit(RuleBase):
     def build_url(self, iden: str) -> str:
         return f"{self.build_url_path()}/{iden}/repos"
 
-    async def run(self,
-                  session: ClientSession,
-                  iden: str,
-                  params: dict | None = None) -> str | None:
+    async def run(self, session: ClientSession, iden: str, params: dict | None = None) -> str | None:
         if self.headers:
             session.headers.update(self.headers)
 
@@ -49,11 +50,9 @@ class Commit(RuleBase):
         response: list[dict] = await resp.json()
         logger.debug("Get response from %s is: %s", repr(self), response)
         for commit in response:
-            
             if "commit" not in commit:
                 continue
             auther = commit["commit"]["author"]
             if auther and "email" in auther and not auther["email"].endswith("users.noreply.github.com"):
                 return auther["email"]
         return None
-

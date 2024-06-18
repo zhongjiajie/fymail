@@ -1,14 +1,17 @@
-import inspect
-import pkgutil
-from abc import ABC, abstractmethod
-from functools import cache
-
-from aiohttp import ClientSession
+from __future__ import annotations
 
 import importlib
-from fymail.error import NoProviderNameError, NoProviderBaseUrlPathError
-from fymail.providers.base.rule_base import RuleBase
+import inspect
 import logging
+import pkgutil
+from abc import abstractmethod
+from typing import TYPE_CHECKING, ClassVar
+
+from fymail.error import NoProviderBaseUrlPathError, NoProviderNameError
+from fymail.providers.base.rule_base import RuleBase
+
+if TYPE_CHECKING:
+    from aiohttp import ClientSession
 
 logger = logging.getLogger(__name__)
 
@@ -17,13 +20,13 @@ class ProviderBaseMeta(type):
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
 
-        if cls.__name__ == 'ProviderBase':
+        if cls.__name__ == "ProviderBase":
             return
 
-        if getattr(cls, 'base_url', None) is None:
+        if getattr(cls, "base_url", None) is None:
             raise NoProviderBaseUrlPathError
 
-        if getattr(cls, 'provider_name', None) is None:
+        if getattr(cls, "provider_name", None) is None:
             raise NoProviderNameError
 
         # if getattr(cls, 'package_provider', None) is None:
@@ -34,7 +37,7 @@ class ProviderBase(metaclass=ProviderBaseMeta):
     base_url: str = None
     provider_name: str = None
     package_provider: str = None
-    rules: list[RuleBase] = []
+    rules: ClassVar[list[RuleBase]] = []
 
     def __repr__(self):
         return f"<Provider: {self.provider_name}>"
@@ -44,15 +47,11 @@ class ProviderBase(metaclass=ProviderBaseMeta):
 
     @staticmethod
     @abstractmethod
-    def auth_setter(session: ClientSession,
-                    auth: str) -> None:
+    def auth_setter(session: ClientSession, auth: str) -> None:
         pass
 
     @abstractmethod
-    async def get(self,
-                  session: ClientSession,
-                  auth: str,
-                  iden: str) -> str | None:
+    async def get(self, session: ClientSession, auth: str, iden: str) -> str | None:
         self.register_rules()
         self.auth_setter(session, auth)
 
@@ -64,8 +63,10 @@ class ProviderBase(metaclass=ProviderBaseMeta):
                 return result
         return None
 
-    @cache
     def register_rules(self) -> None:
+        if self.rules:
+            return
+
         package = importlib.import_module(self.package_provider)
         for module_info in pkgutil.walk_packages(package.__path__, f"{self.package_provider}."):
             module = importlib.import_module(module_info.name)
@@ -78,4 +79,3 @@ class ProviderBase(metaclass=ProviderBaseMeta):
 
         # make sure rule keep in manual order
         self.rules.sort(key=lambda x: x.name)
-
