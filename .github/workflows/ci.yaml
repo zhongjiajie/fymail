@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "**"
   pull_request:
 
 concurrency:
@@ -41,5 +41,20 @@ jobs:
         env: 
           FYMAIL_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          hatch env create test
+          hatch env create fymail-test
           hatch test
+  publish:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Hatch
+        uses: pypa/hatch@install
+      - name: publish
+        env:
+          HATCH_INDEX_USER: __token__
+          HATCH_INDEX_AUTH: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          hatch build
+          hatch publish
