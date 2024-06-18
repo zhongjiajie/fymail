@@ -22,7 +22,7 @@ hatch env create
 create test environment only once,
 
 ```shell
-hatch env create test
+hatch env create fymail-test
 ```
 
 and run test in the environment
@@ -35,5 +35,10 @@ hatch test
 
 * Update version: `hatch version <major|minor|micro|release>`, see [hatch version](https://hatch.pypa.io/latest/version/)
   for more detail
-* Build package: `hatch build`, see [hatch build](https://hatch.pypa.io/latest/build/) for more detail
-* Upload package: `hatch publish`, see [hatch publish](https://hatch.pypa.io/latest/publish/) for more detail
+* Commit the version change, add new tag and push to remote, and CI will build and publish the package to PyPI
+
+```shell
+git commit -am "Release version <YOUR_VERSION_HERE>"
+git tag <YOUR_VERSION_HERE>
+git push origin tag <YOUR_VERSION_HERE>
+```
