@@ -16,8 +16,8 @@ if not gh_token:
 
 async def main():
     fymail = FyMail()
-    await fymail.get(iden="zhongjiajie", provider="github", auth=gh_token)
+    return await fymail.get(iden="zhongjiajie", provider="github", auth=gh_token)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print(asyncio.run(main()))
