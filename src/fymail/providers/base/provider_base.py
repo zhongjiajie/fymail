@@ -56,10 +56,10 @@ class ProviderBase(metaclass=ProviderBaseMeta):
         self.auth_setter(session, auth)
 
         for rule in self.rules:
-            logger.info("Trying to get %s's email with %s", iden, repr(rule))
+            logger.info("Trying to get %s's email for %s with %s", iden, repr(self), repr(rule))
             result = await rule.run(session, iden)
             if result is not None:
-                logger.info("Success get %s's email %s with %s, %s", iden, result, repr(self), repr(rule))
+                logger.info("Success get %s's email %s for %s with %s", iden, result, repr(self), repr(rule))
                 return result
         return None
 
