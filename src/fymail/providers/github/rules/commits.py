@@ -33,6 +33,7 @@ class Commit(RuleBase):
         # we only need owner repositories and for latest page
         params = {"type": "owner", "sort": "updated", "author": iden}
         async with session.get(self.build_url(iden), params=params) as response:
+            response.raise_for_status()
             resp: list[dict] = await response.json()
             logger.debug("Get response from %s is: %s", repr(self), resp)
             # fork repo cause wrong result

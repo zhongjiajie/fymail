@@ -1,7 +1,9 @@
 import logging
 import os
+import string
 
 import pytest
+from aiohttp import ClientResponseError
 
 from fymail import FyMail
 
@@ -32,3 +34,13 @@ async def test_gh_rules_users(iden, rule, caplog):
         email = await fymail.get(iden=iden, provider=provider, auth=token)
         assert email is not None
         assert rule in caplog.text
+
+
+@pytest.mark.parametrize(
+    "iden",
+    ["zhongjiajie"],
+)
+@pytest.mark.asyncio
+async def test_gh_bad_token(iden):
+    with pytest.raises(ClientResponseError):
+        await fymail.get(iden=iden, provider=provider, auth=string.ascii_lowercase)

@@ -34,6 +34,7 @@ class Profile(RuleBase):
 
         # get github profile content
         async with session.get(download_url) as response:
+            response.raise_for_status()
             content = await response.text()
             logger.debug("Get profile content from %s is: %s", repr(self), content)
 
