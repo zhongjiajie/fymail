@@ -17,6 +17,12 @@ pip install hatch
 hatch env create
 ```
 
+### Lint
+
+```shell
+hatch fmt
+```
+
 ## Test
 
 create test environment only once,

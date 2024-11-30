@@ -44,6 +44,7 @@ class RuleBase(metaclass=RuleBaseMeta):
         if self.headers:
             session.headers.update(self.headers)
         async with session.get(self.build_url(iden), params=params) as response:
+            response.raise_for_status()
             return await self.parse(response)
 
     @abstractmethod
