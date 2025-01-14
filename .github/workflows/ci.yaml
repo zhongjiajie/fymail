@@ -36,18 +36,18 @@ jobs:
     needs: lint
     steps:
       - uses: actions/checkout@v4
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install dependencies
-        run: pip install hatch
+      - name: Install Hatch
+        uses: pypa/hatch@install
       - name: Run Test
         env: 
           FYMAIL_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           hatch env create fymail-test
           hatch env show
+          hatch run pytest -VV
+          hatch run pip install pytest-asyncio
+          hatch run pytest -VV
+          hatch run pip list
           hatch test
   publish:
     runs-on: ubuntu-latest
