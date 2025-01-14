@@ -47,7 +47,7 @@ jobs:
           hatch run pip list
           hatch run pip install pytest-asyncio
           hatch run pip list
-          hatch test
+          hatch -e fymail-test test
   publish:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')

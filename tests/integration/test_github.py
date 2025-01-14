@@ -4,6 +4,7 @@ import string
 
 import pytest
 from aiohttp import ClientResponseError
+import pytest_asyncio
 
 from fymail import FyMail
 
@@ -68,11 +69,17 @@ async def test_gh_rules_users(idens, rule, caplog):
                 continue
 
 
+@pytest.mark.asyncio
+async def test_gh_bad_token1():
+    with pytest.raises(ClientResponseError):
+        await fymail.get(iden="zhongjiajie", provider=provider, auth=string.ascii_lowercase)
+
+
 @pytest.mark.parametrize(
     "iden",
     ["zhongjiajie"],
 )
-@pytest.mark.asyncio
+@pytest_asyncio.fixture
 async def test_gh_bad_token(iden):
     with pytest.raises(ClientResponseError):
         await fymail.get(iden=iden, provider=provider, auth=string.ascii_lowercase)
