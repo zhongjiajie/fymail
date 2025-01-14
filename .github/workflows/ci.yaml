@@ -46,6 +46,7 @@ jobs:
           hatch env show
           hatch run pip list
           hatch run pip install pytest-asyncio
+          hatch run pip list
           hatch test
   publish:
     runs-on: ubuntu-latest
