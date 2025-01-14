@@ -43,8 +43,8 @@ jobs:
           FYMAIL_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           hatch env create fymail-test
-          pytest -VV
           hatch test
+          python -m pytest -VV
   publish:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
