@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from collections import Counter
-from collections.abc import Collection
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Collection
 
 
 def most_common_element(collection: Collection, *, ignore_none: bool) -> Any | None:
