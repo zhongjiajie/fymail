@@ -44,10 +44,8 @@ jobs:
         run: |
           hatch env create fymail-test
           hatch env show
-          hatch run pytest -VV
-          hatch run pip install pytest-asyncio
-          hatch run pytest -VV
           hatch run pip list
+          hatch run pip install pytest-asyncio
           hatch test
   publish:
     runs-on: ubuntu-latest
