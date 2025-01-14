@@ -3,8 +3,8 @@ import os
 import string
 
 import pytest
-from aiohttp import ClientResponseError
 import pytest_asyncio
+from aiohttp import ClientResponseError
 
 from fymail import FyMail
 
