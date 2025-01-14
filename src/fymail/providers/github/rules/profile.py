@@ -21,6 +21,7 @@ class Profile(RuleBase):
 
     name = "GH10"
     path = "repos"
+    check_resp: bool = False
 
     def build_url(self, iden: str) -> str:
         return f"{super().build_url(iden)}/{iden}/readme"

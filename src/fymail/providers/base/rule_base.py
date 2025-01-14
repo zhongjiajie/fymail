@@ -27,6 +27,7 @@ class RuleBase(metaclass=RuleBaseMeta):
     name = None
     path = None
     headers = None
+    check_resp: bool = True
 
     def __init__(self, base_url: str):
         self.base_url = base_url
@@ -44,7 +45,8 @@ class RuleBase(metaclass=RuleBaseMeta):
         if self.headers:
             session.headers.update(self.headers)
         async with session.get(self.build_url(iden), params=params) as response:
-            response.raise_for_status()
+            if self.check_resp:
+                response.raise_for_status()
             return await self.parse(response)
 
     @abstractmethod
