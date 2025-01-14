@@ -3,7 +3,6 @@ import os
 import string
 
 import pytest
-import pytest_asyncio
 from aiohttp import ClientResponseError
 
 from fymail import FyMail
@@ -79,7 +78,7 @@ async def test_gh_bad_token1():
     "iden",
     ["zhongjiajie"],
 )
-@pytest_asyncio.fixture
+@pytest.mark.asyncio
 async def test_gh_bad_token(iden):
     with pytest.raises(ClientResponseError):
         await fymail.get(iden=iden, provider=provider, auth=string.ascii_lowercase)
