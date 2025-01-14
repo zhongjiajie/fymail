@@ -44,13 +44,10 @@ Source = "https://github.com/zhongjiajie/fymail"
 [tool.hatch.version]
 path = "src/fymail/__init__.py"
 
-[tool.hatch.envs.fymail-test]
+[tool.hatch.envs.test]
 extra-dependencies = [
     "pytest-asyncio",
-    "pytest",
 ]
-default-args = ["tests"]
-extra-args = ["-vv"]
 
 [tool.hatch.envs.types]
 extra-dependencies = [
