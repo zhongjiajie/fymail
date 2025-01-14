@@ -82,7 +82,7 @@ exclude = [
 packages = ["src/fymail"]
 
 [tool.pytest.ini_options]
-asyncio_mode="auto"
+asyncio_mode = "auto"
 
 [tool.coverage.run]
 source_pkgs = ["fymail"]
