@@ -43,7 +43,7 @@ jobs:
           FYMAIL_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           hatch env create fymail-test
-          pip install pytest-asyncio
+          pytest -VV
           hatch test
   publish:
     runs-on: ubuntu-latest
