@@ -46,7 +46,7 @@ path = "src/fymail/__init__.py"
 
 [tool.hatch.envs.fymail-test]
 extra-dependencies = [
-  "pytest-asyncio",
+    "pytest-asyncio~=0.25",
 ]
 default-args = ["tests"]
 extra-args = ["-vv"]
